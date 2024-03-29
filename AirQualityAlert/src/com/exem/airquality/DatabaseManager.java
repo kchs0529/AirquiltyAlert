@@ -17,8 +17,6 @@ public class DatabaseManager {
         config.setPassword("1234");
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
-        // 기타 설정들을 필요에 따라 추가할 수 있습니다.
-
         dataSource = new HikariDataSource(config);
     }
 
@@ -45,14 +43,14 @@ public class DatabaseManager {
         }
     }
 
-    public static void saveAlertOrder(String stationCode, String alertLevel, String orderTime, int alertGrade) {
+    public static void saveAlertOrder(String stationCode, String alertLevel, String alertTime, int alertGrade) {
         try (Connection conn = dataSource.getConnection()) {
-            String query = "INSERT INTO AlertOrder (stationCode, alert_level, alert_time, alert_grade) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO AlertOrder (stationCode, alertLevel, alertTime, alertGrade) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, stationCode);
-            statement.setString(3, alertLevel);
-            statement.setString(4, orderTime);
-            statement.setInt(5, alertGrade);
+            statement.setString(2, alertLevel);
+            statement.setString(3, alertTime);
+            statement.setInt(4, alertGrade);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
