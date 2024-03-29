@@ -57,12 +57,13 @@ public class DatabaseManager {
         }
     }
 
-    public static void saveStationCheck(String stationNum, String checkTime) {
+    public static void saveStationInspection(String stationCode, String inspection, String inspectionTime) {
         try (Connection conn = dataSource.getConnection()) {
-            String query = "INSERT INTO StationCheck (stationNum, check_time) VALUES (?, ?)";
+            String query = "INSERT INTO StationInspection (stationCode, inspection,inspectionTime) VALUES (?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, stationNum);
-            statement.setString(2, checkTime);
+            statement.setString(1, stationCode);
+            statement.setString(2, inspection);
+            statement.setString(3, inspectionTime);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
