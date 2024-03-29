@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReadJSON {
+public class AirqualityAlert {
 	
-	private static Map<String, Integer> previousPM10 = new HashMap<>();
-    private static Map<String, Integer> previousPM25 = new HashMap<>();
+	private static Map<String, Integer> previousPM10 = new HashMap<>();//HashMap의 key는 stationCode
+    private static Map<String, Integer> previousPM25 = new HashMap<>();//HashMap의 key는 stationCode
 	
 	public static void main(String[] args) throws Exception {
         JSONParser parser = new JSONParser();
@@ -32,11 +32,12 @@ public class ReadJSON {
                 int pm10 = Integer.parseInt(pm10Str != null ? pm10Str : "0");
                 int pm25 = Integer.parseInt(pm25Str != null ? pm25Str : "0");
                 
-                int previousPM10Value = previousPM10.getOrDefault(stationCode, 0);
-                int previousPM25Value = previousPM25.getOrDefault(stationCode, 0);
+                int previousPM10Value = previousPM10.getOrDefault(stationCode, 0);//처음은 0으로 설정
+                int previousPM25Value = previousPM25.getOrDefault(stationCode, 0);//처음은 0으로 설정
 
                 int averagePM25 = (previousPM25Value + pm25) / 2; //미세먼지 2시간 평균 계산
                 int averagePM10 = (previousPM10Value + pm10) / 2; //미세먼지 2시간 평균 계산
+                
                 
                 if (averagePM25 >= 150 ) {
                 	alertGrade = 1;
@@ -56,10 +57,13 @@ public class ReadJSON {
                 previousPM10.put(stationCode, pm10);
                 previousPM25.put(stationCode, pm25);
 
+                StationInspection(stationCode,null,currentDate,pm10,pm25);
+                
                 // 데이터베이스에 측정 데이터 저장
                 DatabaseManager.saveData(currentDate, stationName, stationCode, String.valueOf(pm10), String.valueOf(pm25));
             }
             
+            //alertGrade가 0이 아니면서 변경될때마다 경보발령 정보를 전송하는 알람 시스템을 구현
             
             
             System.out.println("데이터 입력 완료");
@@ -67,6 +71,25 @@ public class ReadJSON {
             e.printStackTrace();
         }
         
+    }
+	
+	
+	//측정소 점검 확인 메소드
+	public static void StationInspection(String stationCode,String inspection,String inspectionTime,int pm10,int pm25){
+		if (pm10 == 0 && pm25 == 0) {
+		    inspection="미세먼지와 초미세먼지 측정기가 모두 점검중입니다.";
+		    DatabaseManager.saveStationInspection(stationCode, inspection,inspectionTime);
+		}
+
+		if (pm10 == 0 && pm25 != 0) {
+			inspection="미세먼지 측정기가 점검중입니다.";
+			DatabaseManager.saveStationInspection(stationCode, inspection,inspectionTime);
+		}
+
+		if (pm10 != 0 && pm25 == 0) {
+			inspection="초미세먼지 측정기가 점검중입니다.";
+			DatabaseManager.saveStationInspection(stationCode, inspection,inspectionTime);
+		}
     }
 	
 }
