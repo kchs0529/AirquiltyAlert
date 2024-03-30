@@ -27,6 +27,7 @@ public class DatabaseConnection {
 		}
 	}
 	
+	/* 연결 테스트
 	public static void main(String[] args) {
         DatabaseConnection dbConnection = new DatabaseConnection();
         try {
@@ -41,4 +42,5 @@ public class DatabaseConnection {
             System.out.println("Error occurred while connecting to database: " + e.getMessage());
         }
     }
+    */
 }
