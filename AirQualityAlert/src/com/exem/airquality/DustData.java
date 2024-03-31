@@ -10,7 +10,6 @@ public class DustData {
 
 	private Connection conn = null;
 	boolean hook = true;
-
 	public DustData(Connection c) {
 		conn = c;
 	}
@@ -22,13 +21,11 @@ public class DustData {
 	
 	public void insertDustData(String stationCode,String stationName,String date, String checkDay, int checkHour, int pm10, int pm25)	{
 		try {
-			String insertStation = "INSERT INTO station (StationCode, StationName) VALUES (?, ?) "
-					+ "ON DUPLICATE KEY UPDATE StationName = VALUES(StationName)";
-			PreparedStatement stationpstmt = conn.prepareStatement(insertStation);
-			stationpstmt.setString(1,stationCode);
-			stationpstmt.setString(2, stationName);
-			stationpstmt.execute();
-			stationpstmt.close();
+			Station station = new Station(conn);
+			if(station.getName(stationCode)==null) {
+				station.insert(stationCode,stationName);
+			}
+			
 			
 			String insertStationData = "Insert Into dust_data (StationCode, check_Day, check_Hour, pm10, pm25) Values(?,?,?,?,?)";
 			PreparedStatement pstmt = conn.prepareStatement(insertStationData);
@@ -51,7 +48,8 @@ public class DustData {
 			if (grade != 0) {	// 미세먼지 주의보 등급이 있으면
 				int id = getData(stationCode, checkDay, checkHour)[2];
 				DustAlert da = new DustAlert(conn);
-				da.insert(id,date, grade);	
+				da.insert(id,date, grade);
+				setHook(true);
 				if (hook) { 
 					da.sendMessage(stationCode, checkDay, checkHour,grade);
 				}
@@ -101,16 +99,17 @@ public class DustData {
 		return data;
 	}	
 
+	//경보 등급
 	public int getGrade(int pm10, int pm25, int[] preData)	{
 		int grade = 0;
 		try {
 			if ((pm25 >= 150)&&(preData[1] >= 150))
 				grade = 1;
-			else if ((pm10 >= 300)&&(preData[1] >= 300))
+			else if ((pm10 >= 300)&&(preData[0] >= 300))
 				grade = 2;
 			else if ((pm25 >= 75)&&(preData[1] >= 75))
 				grade = 3;
-			else if ((pm10 >= 150)&&(preData[1] >= 150))
+			else if ((pm10 >= 150)&&(preData[0] >= 150))
 				grade = 4;
 		} catch (Exception e1) {
 			System.out.println("dust_data getGrade:" + e1.getMessage());
