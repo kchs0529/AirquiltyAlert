@@ -34,24 +34,25 @@ public class DustAlert {
 	//메세지 전송
 	public void sendMessage(String stationCode,String Day,int hour, int grade)	{
 		Station station = new Station(conn);
+		AlertData alertData = new AlertData(conn);
 		String stationName = station.getName(stationCode);
-		String msg = null;
-		if (grade == 1)
-			msg = "초미세먼지 경보가 발령되었습니다. 건강에 매우 해로우니 주의하시기 바랍니다";
-		else if (grade == 2)
-			msg = "미세먼지 경보가 발령되었습니다. 건강에 매우 해로울수 있으니 주의하시기 바랍니다";
-		else if (grade == 3)
-			msg = "미세먼지 경보가 발령되었습니다. 건강에 매우 해로울수 있으니 주의하시기 바랍니다";
-		else if (grade == 4)
-			msg = "미세먼지 경보가 발령되었습니다. 건강에 매우 해로울수 있으니 주의하시기 바랍니다";
-		msg = Day+" "+hour + "시에 "+msg;
-
+		String dust_alert = alertData.getAlert(grade);
+		String msg = Day+" "+hour + "시에 "+stationName+"에 ";
+		if(grade==1)
+			msg = msg+dust_alert+"가 발령되었습니다. 건강에 매우 해로우니 주의하시기 바랍니다";
+		else if(grade==2)
+			msg = msg+dust_alert+"가 발령되었습니다. 건강에 매우 해로울수 있으니 주의하시기 바랍니다";
+		else if(grade==3)
+			msg = msg+dust_alert+"가 발령되었습니다. 건강에 해로울수 있으니 주의하시기 바랍니다";
+		else if(grade==4)
+			msg = msg+dust_alert+"가 발령되었습니다. 건강에 약간 해로울수 있으니 주의하시기 바랍니다";
+		System.out.println(msg);
 		// 제시된 외부 API가 없어 localhost/jsp/sendMsg.jsp에 parameter로 보냄
 		try {
 			URL url = new URL("https://localhost/jsp/sendMsg.jsp");	
 			HttpURLConnection con = (HttpURLConnection)url.openConnection();;
 			con.setRequestMethod("POST");
-			String param = "spotCode="+stationCode+"&spotNm="+stationName+"&msg="+msg;
+			String param = "stationCode="+stationCode+"&StaionName="+stationName+"&msg="+msg;
 
 			DataOutputStream dos = new DataOutputStream(con.getOutputStream());
 			dos.writeBytes(param);
@@ -71,8 +72,8 @@ public class DustAlert {
 			}
 			con.disconnect();
 
-		} catch (Exception e11) {
-			System.out.println("dust_alert sendMessage:" + e11.getMessage());
+		} catch (Exception e) {
+			System.out.println("dust_alert sendMessage:" + e.getMessage());
 		}
 	}	
 
