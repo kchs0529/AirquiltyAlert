@@ -47,9 +47,9 @@ public class DustAlert {
 		else if(grade==4)
 			msg = msg+dust_alert+"가 발령되었습니다. 건강에 약간 해로울수 있으니 주의하시기 바랍니다";
 		System.out.println(msg);
-		// 제시된 외부 API가 없어 localhost/jsp/sendMsg.jsp에 parameter로 보냄
+		// 제시된 외부 API가 없어 localhost/jsp/Msg.jsp에 parameter로 보냄
 		try {
-			URL url = new URL("https://localhost/jsp/sendMsg.jsp");	
+			URL url = new URL("https://localhost/jsp/Msg.jsp");	
 			HttpURLConnection con = (HttpURLConnection)url.openConnection();;
 			con.setRequestMethod("POST");
 			String param = "stationCode="+stationCode+"&StaionName="+stationName+"&msg="+msg;
