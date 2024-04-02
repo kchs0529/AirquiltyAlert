@@ -43,5 +43,15 @@
  
  ┃ ┃ ┃ ┃ ┗ 📜Msg.jsp
  
- ┗ ┃ ┃ ┗ 📜import.sql
+ ┗ ┃ ┃ ┗ 📜import.sql // 데이터베이스 스크립트 문
 
+---
+## 개발환경
+
+#### 자바 버젼 : JDK 11
+
+#### 데이터베이스 : MySQL 8.0.21
+
+#### IDEA : Eclipse
+
+#### 외부 라이브러리 : json_simple.jar, mysql-connector-j-8.3.0.jar
