@@ -1,11 +1,11 @@
 # AirquiltyAlert
 
 
-###파일 구성
+### 파일 구성
 
 📦AirQualityAlert
 
- ┣ 📂lib
+ ┣ 📂lib //외부 라이브러리
 
  ┃ ┣ 📜json_simple.jar
  
@@ -31,7 +31,7 @@
 
  ┃ ┃ ┃ ┃ ┣ 📜DustData.java
  
- ┃ ┃ ┃ ┃ ┣ 📜ExeAirquality.java
+ ┃ ┃ ┃ ┃ ┣ 📜ExeAirquality.java  // 실행 파일
  
  ┃ ┃ ┃ ┃ ┗ 📜Station.java
  
